@@ -65,19 +65,23 @@ ol.source.Zoomify = function(opt_options) {
   tierSizeInTiles.push([1, 1]);
   tierSizeInTiles.reverse();
 
-  var resolutions = [1];
-  var tileCountUpToTier = [0];
-  var i, ii;
-  for (i = 1, ii = tierSizeInTiles.length; i < ii; i++) {
-    resolutions.push(1 << i);
-    tileCountUpToTier.push(
-        tierSizeInTiles[i - 1][0] * tierSizeInTiles[i - 1][1] +
-        tileCountUpToTier[i - 1]
-    );
+  if(!opt_options.resolutions) {
+    var resolutions = [1];
+    var tileCountUpToTier = [0];
+    var i, ii;
+    for (i = 1, ii = tierSizeInTiles.length; i < ii; i++) {
+      resolutions.push(1 << i);
+      tileCountUpToTier.push(
+          tierSizeInTiles[i - 1][0] * tierSizeInTiles[i - 1][1] +
+          tileCountUpToTier[i - 1]
+      );
+    }
+    resolutions.reverse();
+  } else {
+    var resolutions = opt_options.resolutions;
   }
-  resolutions.reverse();
 
-  var extent = [0, -size[1], size[0], 0];
+  var extent = opt_options.extent ? opt_options.extent : [0, -size[1], size[0], 0];
   var tileGrid = new ol.tilegrid.TileGrid({
     extent: extent,
     origin: ol.extent.getTopLeft(extent),
